@@ -1,20 +1,20 @@
 # Welcome to My scripts
 
-My scripts is an open-source repository dedicated to fostering collaboration
-and innovation in software development. Our mission is to create a hub where
-developers of all skill levels can come together to share ideas, learn from
-each other, and build amazing projects.
+My scripts is a personal repository containing a collection of scripts I've
+created for various purposes. These scripts are tools and utilities designed
+for tasks such as automation, system management, and data processing. While
+this is primarily a personal project, I'm open to sharing these scripts with
+others who might find them useful for their own work or learning.
 
 ## About the Project
 
-My scripts was born out of the need for a centralized platform where developers
-could showcase their work, contribute to exciting projects, and stay up-to-date
-with the latest trends in coding. Whether you're a seasoned professional or
-just starting your coding journey, there's a place for you here.
+This repository contains a collection of my personal scripts. These scripts are
+tools and utilities I've created for various purposes, ranging from automation
+tasks to system management and data processing.
 
 ## How to Contribute
 
-We welcome contributions from everyone! Here's how you can get involved:
+I welcome contributions from everyone! Here's how you can get involved:
 
 1. Fork the repository
 2. Create a new branch for your feature or bug fix
