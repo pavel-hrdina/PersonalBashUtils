@@ -12,4 +12,4 @@ Thank you for considering contributing to our project! We welcome contributions 
 
 If you have any questions or need help, please open an issue or reach out to the maintainers.
 
-We appreciate your time and effort in contributing to this project!
+I appreciate your time and effort in contributing to this project!
