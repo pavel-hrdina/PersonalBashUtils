@@ -4,7 +4,7 @@
 # Author: Pavel Hrdina
 # Description: This script downloads a file from a provided URL using curl, wget, or ftp.
 # Usage: ./download-helper.sh <URL>
-# Version: 0.1
+# Version: 0.2
 
 # Check if URL is provided as an argument
 if [[ $# -eq 0 ]]; then
@@ -27,33 +27,34 @@ if ! echo "$1" | grep -qE '^(https?|ftp)://'; then
 fi
 
 url="$1"
+filename=$(basename "$url")
 
-# Check if curl is available
-if command -v curl > /dev/null 2>&1; then
-  # Pipe the output to awk to calculate and display the download size in GB
-  curl -O "$url" --progress-bar | awk '
-  /[0-9]/ {
-    size = $2/1024/1024/1024;
-    printf "\rDownloaded: %.2f GB", size;
-  }'
-elif command -v wget > /dev/null 2>&1; then
-  # Pipe the output to awk to calculate and display the download size in GB
-  wget "$url" -q --show-progress | awk '
-  /[0-9]/ {
-    size = $3/1024/1024/1024;
-    printf "\rDownloaded: %.2f GB", size;
-  }'
-elif command -v ftp > /dev/null 2>&1; then
-  # Pipe the output to awk to calculate and display the download size in GB
-  ftp -o "$(basename "$url")" "$url" | awk '
-  /[0-9]/ {
-    size = $3/1024/1024/1024;
-    printf "\rDownloaded: %.2f GB", size;
-  }'
-else
-  echo "Error: Neither curl, wget, nor ftp is available. Unable to download the file."
+# Updated URL validation
+if ! echo "$url" | grep -qE '^(https?|ftp)://'; then
+  echo "Error: Invalid URL format. Please provide a valid URL starting with http://, https://, or ftp://"
   exit 1
 fi
-echo ""  # Add a newline after download completion
 
-echo "File download complete."
+download_file() {
+  if command -v curl > /dev/null 2>&1; then
+    echo "Downloading with curl..."
+    curl -L -O "$url"
+  elif command -v wget > /dev/null 2>&1; then
+    echo "Downloading with wget..."
+    wget "$url"
+    else
+       echo "Error: Neither curl nor wget is available. Unable to download the file."
+       echo "Please install curl or wget and try again."
+       exit 1
+     fi
+}
+
+download_file
+
+if [ -f "$filename" ]; then
+  size=$(du -h "$filename" | cut -f1)
+  echo "File download complete: $filename (Size: $size)"
+else
+  echo "Error: File download failed or file not found."
+  exit 1
+fi
