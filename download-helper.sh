@@ -30,8 +30,8 @@ url="$1"
 filename=$(basename "$url")
 
 # Updated URL validation
-if ! echo "$url" | grep -qE '^(https?|ftp)://'; then
-  echo "Error: Invalid URL format. Please provide a valid URL starting with http://, https://, or ftp://"
+if ! echo "$url" | grep -qE '^https?://'; then
+  echo "Error: Invalid URL format. Please provide a valid URL starting with http:// or https://"
   exit 1
 fi
 
