@@ -28,7 +28,7 @@ found in the CONTRIBUTING.md file.
 ## License
 
 My scripts is released under the GNU General Public License v3.0. For more
-details, please see the LICENSE file in the repository.
+details, please see the [LICENSE](./LICENSE) file in the repository.
 
 ## Getting Started
 
