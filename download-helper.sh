@@ -15,8 +15,6 @@ if [[ $# -eq 0 ]]; then
   echo ""
   echo "Examples:"
   echo "  $0 https://example.com/file.zip"
-  echo "  $0 http://ftp.gnu.org/gnu/bash/bash-5.1.tar.gz"
-  echo "  $0 ftp://ftp.example.com/pub/file.tar.gz"
   exit 1
 fi
 
