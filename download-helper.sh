@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # This script is licensed under GNU GPL v3.0
 
 # Author: Pavel Hrdina
