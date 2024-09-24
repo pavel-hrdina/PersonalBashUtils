@@ -6,6 +6,8 @@
 # Usage: ./download-helper.sh <URL>
 # Version: 0.2
 
+set -u
+
 # Check if URL is provided as an argument
 if [ $# -eq 0 ]; then
   echo "Error: No URL provided."
