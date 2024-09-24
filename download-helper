@@ -4,7 +4,7 @@
 # Author: Pavel Hrdina
 # Description: This script downloads a file from a provided URL using curl, wget, or ftp.
 # Usage: ./download-helper.sh <URL>
-# Version: 0.2
+# Version: 0.3
 
 set -u
 
