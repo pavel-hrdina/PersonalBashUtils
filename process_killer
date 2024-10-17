@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# This script is licensed under GNU GPL v3.0
+
+# Author: Pavel Hrdina
+# Description: This scrip kills all processes with the given name
+# Usage: ./process_killer <process_name>
+# Version: 0.1
+
+set -u
+
+if [ $# -eq 0 ]; then
+  echo "Error: No process name provided."
+  echo "Usage: $0 <process_name>"
+  echo "This script kills all processes with the provided name."
+  echo ""
+  echo "Examples:"
+  echo "  $0 myprocess"
+  exit 1
+fi
+
+# Validate process name format (basic check)
+if ! echo "$1" | grep -qE '^[a-zA-Z0-9_-]+$'; then
+  echo "Error: Invalid process name format. Please provide a valid process name."
+  exit 1
+fi
+
+process_name="$1"
+
+# Function to kill the process with the given name if it exists and user confirms to kill it
+# It also stops the systemctl service if it exists
+kill_process() {
+  if pgrep -x "$process_name" > /dev/null; then
+    echo "Process $process_name found. Do you want to kill it? [Y/n]"
+    read -r answer
+    answer=${answer:-Y}
+    if [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+      pkill -x "$process_name"
+      # stop systemctl service if exists
+      if systemctl is-active --quiet "$process_name"; then
+        systemctl stop "$process_name"
+      fi
+      echo "Process $process_name killed."
+    else
+      echo "Process $process_name not killed."
+      exit 1
+    fi
+  else
+    echo "Error: Process $process_name not found."
+    exit 1
+  fi
+}
+
+kill_process
