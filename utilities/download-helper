@@ -1,7 +1,7 @@
-#!/bin/sh
-# This script is licensed under GNU GPL v3.0
+#!/usr/bin/env bash
 
-# Author: Pavel Hrdina
+# This script is licensed under GNU GPL v3.0
+# Created by: github.com/pavel-hrdina
 # Description: This script downloads a file from a provided URL using curl, wget, or ftp.
 # Usage: ./download-helper <URL>
 # Version: 0.3
