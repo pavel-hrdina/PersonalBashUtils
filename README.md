@@ -23,7 +23,7 @@ This project is a collection of bash scripts that I've created for various
 purposes. The scripts are organized into directories based on their functionality
 or purpose. Here are some of the directories you'll find in this repository:
 
-- : Scripts for automating repetitive tasks or workflows
+- **automation**: Scripts for automating repetitive tasks or workflows
 - **backup**: Scripts for backing up files, directories, or databases
 - **data-processing**: Scripts for processing data, such as CSV files or logs
 - **networking**: Scripts for network-related tasks, such as pinging or checking ports
