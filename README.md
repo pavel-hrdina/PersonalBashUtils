@@ -23,13 +23,13 @@ This project is a collection of bash scripts that I've created for various
 purposes. The scripts are organized into directories based on their functionality
 or purpose. Here are some of the directories you'll find in this repository:
 
-- **automation**: Scripts for automating repetitive tasks or workflows
+- : Scripts for automating repetitive tasks or workflows
 - **backup**: Scripts for backing up files, directories, or databases
 - **data-processing**: Scripts for processing data, such as CSV files or logs
 - **networking**: Scripts for network-related tasks, such as pinging or checking ports
-- **system-management**: Scripts for managing system resources, services, or configurations
-- **utilities**: General-purpose utility scripts for various tasks
-- **system-config**: Scripts for configuring system settings or preferences
+- [system-management](./system-management): Scripts for managing system resources, services, or configurations
+- [utilities](./utilities): General-purpose utility scripts for various tasks
+- **config**: Scripts for managing configuration files or settings
 
 Each script is well-documented with comments to explain its purpose, usage, and
 implementation. You can explore the scripts to see how they work and modify them
