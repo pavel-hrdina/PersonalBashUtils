@@ -4,7 +4,7 @@
 
 # Author: Pavel Hrdina
 # Description: This scrip kills all processes with the given name
-# Usage: ./process_killer <process_name>
+# Usage: ./process-killer <process_name>
 # Version: 0.1
 
 set -u
