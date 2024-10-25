@@ -78,6 +78,12 @@ chmod +x script.sh
 ./script.sh
 ```
 
+or you can live on the edge and run the script directly from the repository:
+
+```bash
+bash -c "$(curl -sSL https://raw.githubusercontent.com/pavel-hrdina/PersonalBashUtils/refs/heads/master/[script-path])"
+```
+
 4. Follow the instructions in the script to complete the task or process.
 
 If you encounter any issues or have questions about the script, feel free to open an issue in the repository.
