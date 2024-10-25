@@ -1,0 +1,195 @@
+#!/usr/bin/env bash
+
+# This is licensed under the GNU GPL v3.0 license
+# Created by: github.com/pavel-hrdina
+# Description: Connect to a wireless network using nmcli
+# Usage: bash net-connect
+# Version: 0.0.2
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# Constants
+readonly VERSION="0.0.2"
+readonly SCRIPT_NAME="${0##*/}"
+
+# Error codes
+readonly E_DEPENDENCY=2
+readonly E_NETWORK=3
+readonly E_PERMISSION=4
+
+# Colors for output
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly NC='\033[0m' # No Color
+
+# Function to display error messages
+error() {
+    echo -e "${RED}Error: $1${NC}" >&2
+}
+
+# Function to display success messages
+success() {
+    echo -e "${GREEN}Success: $1${NC}"
+}
+
+# Function to display warning messages
+warning() {
+    echo -e "${YELLOW}Warning: $1${NC}"
+}
+
+# Function to check if running with necessary privileges
+check_privileges() {
+    if ! command -v nmcli >/dev/null 2>&1; then
+        error "nmcli is not installed. Please install NetworkManager."
+        exit $E_DEPENDENCY
+    fi
+
+    if [ "$(id -u)" -ne 0 ] && ! groups | grep -qw "netdev"; then
+        error "This script requires root privileges or membership in the 'netdev' group."
+        exit $E_PERMISSION
+    fi
+}
+
+# Function to display help message
+display_help() {
+    cat <<EOF
+Usage: $SCRIPT_NAME [OPTION]...
+Connect to a wireless network using nmcli.
+
+Options:
+    -h, --help              Display this help message
+    -v, --version           Display version information
+    -l, --list             Only list available networks
+    -s, --ssid <SSID>      Specify network SSID directly
+    -p, --password <PASS>  Specify network password (use with caution)
+
+Examples:
+    $SCRIPT_NAME           # Interactive mode
+    $SCRIPT_NAME -l        # Only list networks
+    $SCRIPT_NAME -s MyWiFi # Connect to specific network
+    $SCRIPT_NAME -s MyWiFi -p MyPassword # Connect with password
+
+Report bugs to: github.com/pavel-hrdina
+EOF
+    exit 0
+}
+
+# Function to check if network exists
+check_network_exists() {
+    local ssid=$1
+    if ! nmcli device wifi list | grep -q "$ssid"; then
+        error "Network '$ssid' not found"
+        exit $E_NETWORK
+    fi
+}
+
+# Function to check if already connected
+check_if_connected() {
+    local ssid=$1
+    if nmcli connection show --active | grep -q "$ssid"; then
+        success "Already connected to '$ssid'"
+        exit 0
+    fi
+}
+
+# Function to connect to network
+connect_to_network() {
+    local ssid=$1
+    local password=$2
+
+    if [ -n "$password" ]; then
+        if ! nmcli device wifi connect "$ssid" password "$password"; then
+            error "Failed to connect to '$ssid'. Please check your password."
+            exit $E_NETWORK
+        fi
+    else
+        if ! nmcli device wifi connect "$ssid"; then
+            error "Failed to connect to '$ssid'"
+            exit $E_NETWORK
+        fi
+    fi
+
+    success "Successfully connected to '$ssid'"
+}
+
+# Function to list available networks
+list_networks() {
+    echo "Available wireless networks:"
+    echo "------------------------"
+    nmcli --fields SSID,SIGNAL,SECURITY device wifi list | tail -n +2 | sort -k2 -nr
+}
+
+# Main script
+main() {
+    local ssid=""
+    local password=""
+    local list_only=false
+
+    # Parse command line arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                display_help
+                ;;
+            -v|--version)
+                echo "$SCRIPT_NAME version $VERSION"
+                exit 0
+                ;;
+            -l|--list)
+                list_only=true
+                shift
+                ;;
+            -s|--ssid)
+                ssid="$2"
+                shift 2
+                ;;
+            -p|--password)
+                password="$2"
+                shift 2
+                ;;
+            *)
+                error "Unknown option: $1"
+                display_help
+                ;;
+        esac
+    done
+
+    # Check for required privileges
+    check_privileges
+
+    # If only listing networks was requested
+    if [ "$list_only" = true ]; then
+        list_networks
+        exit 0
+    fi
+
+    # Interactive mode if no SSID provided
+    if [ -z "$ssid" ]; then
+        list_networks
+        echo
+        read -rp "Enter the SSID of the network you want to connect to: " ssid
+    fi
+
+    # Validate network existence
+    check_network_exists "$ssid"
+
+    # Check if already connected
+    check_if_connected "$ssid"
+
+    # If password wasn't provided via command line and network requires it
+    if [ -z "$password" ] && nmcli device wifi list | grep -q "$ssid.*yes"; then
+        read -rsp "Enter the password for '$ssid': " password
+        echo
+    fi
+
+    # Attempt connection
+    connect_to_network "$ssid" "$password"
+}
+
+# Trap Ctrl+C and handle it gracefully
+trap 'echo -e "\n${YELLOW}Script interrupted by user${NC}"; exit 130' INT
+
+# Run main function
+main "$@"
