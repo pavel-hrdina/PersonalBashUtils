@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# This is licensed under the GNU GPL v3.0 license
+# Created by: github.com/pavel-hrdina
+# Description: Will copy a file to a directory taking a file and a directory as arguments
+#              and will display a progress bar
+# Usage: bash net-connect
+# Version: 0.0.1
+
+set -eou pipefail
+IFS=$'\n\t'
+
+# Constants
+readonly VERSION="0.0.2"
+readonly SCRIPT_NAME="${0##*/}"
+
+# Error codes
+readonly E_DEPENDENCY=2
+readonly E_NETWORK=3
+readonly E_PERMISSION=4
+
+# Colors for output
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly NC='\033[0m' # No Color
+
+# Function to display help message
+display_help() {
+    cat <<EOF
+Usage: $SCRIPT_NAME [OPTION]...
+Connect to a wireless network using nmcli.
+
+Options:
+    -h, --help              Display this help message
+    -v, --version           Display version information
+
+Examples:
+    $SCRIPT_NAME  ./file.txt  $HOME/Documents
+
+Report bugs to: github.com/pavel-hrdina
+EOF
+    exit 0
+}
+
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            display_help
+            ;;
+        -v|--version)
+            echo "$SCRIPT_NAME version $VERSION"
+            exit 0
+            ;;
+         *)
+            if [ $# -ne 2 ]; then
+                echo "Usage: $0 <file> <directory>"
+                exit 1
+            fi
+            break
+            ;;
+    esac
+done
+
+# Check if the user has provided the correct number of arguments
+
+# Assign arguments to variables after checking the number of arguments
+file="$1"
+directory="$2"
+
+# run the cp command and display a progress bar
+cp -v "$file" "$directory" | dd if="$file" of="$directory/$(basename "$file")" status=progress
+
+# Check if the cp command was successful
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}File copied successfully${NC}"
+else
+    echo -e "${RED}Error copying file${NC}"
+fi
